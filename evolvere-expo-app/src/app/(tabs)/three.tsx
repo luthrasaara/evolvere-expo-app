@@ -16,8 +16,11 @@ export default function TabLayout() {
   useEffect(() => {
     fetchTodos();
   }, [user]);
+
+  // ------ Fetch entries from Firestore ------
   const fetchTodos = async () => {
     if(user){
+      // only get enties belonging to current user
         const q = query(todosCollection, where("userId", "==", user.uid));
         const data = await getDocs(q);
         setTodos(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
@@ -25,22 +28,27 @@ export default function TabLayout() {
         console.log("No user logged in");
     }
   };
+
+  {/* Add Journal Entry */}
   const addTodo = async () => {
     if (user){
         await addDoc(todosCollection, { task, createdAt: new Date(), userId: user.uid })
+        // clear input after adding
         setTask('');
+
+        // refresh list
         fetchTodos();
     } else {
         console.log("No user logged in");
     }
   };
-  const updateTodo = async (id: string) => {
-    const todoDoc = doc(db, 'todos', id);
-    fetchTodos();
-  };
+  
+  {/* Delete Journal Entry */}
   const deleteTodo = async (id: string) => {
     const todoDoc = doc(db, 'todos', id);
     await deleteDoc(todoDoc);
+
+    // refresh list after deletion
     fetchTodos();
   };
 
@@ -49,6 +57,7 @@ export default function TabLayout() {
       <View style={styles.container}>
         <Text style={styles.mainTitle}>Gratitude Journal</Text>
         <View style={styles.inputContainer}>
+          {/* Text Input */}
           <TextInput
             placeholder="Write something you're grateful for..."
             value={task}
@@ -61,6 +70,8 @@ export default function TabLayout() {
             <Text style={styles.buttonText}>Add</Text>
           </TouchableOpacity>
         </View>
+
+        {/* List of journal entries */}
         <FlatList
           data={todos}
           renderItem={({ item }) => (

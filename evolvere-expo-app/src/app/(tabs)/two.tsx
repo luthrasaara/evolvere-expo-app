@@ -16,8 +16,11 @@ export default function TabLayout() {
   useEffect(() => {
     fetchTasks();
   }, [user]);
+
+  // ------ Fetch tasks from Firestore ------
   const fetchTasks = async () => {
     if(user){
+      // only get tasks belonging to current user
         const q = query(tasksCollection, where("userId", "==", user.uid));
         const data = await getDocs(q);
         setTasks(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
@@ -28,7 +31,9 @@ export default function TabLayout() {
   const addTodo = async () => {
     if (user){
         await addDoc(tasksCollection, { task, completed: false, userId: user.uid })
+        // clear input
         setTask('');
+        // refresh list
         fetchTasks();
     } else {
         console.log("No user logged in");
@@ -39,9 +44,12 @@ export default function TabLayout() {
     await updateDoc(todoDoc, { completed: !completed });
     fetchTasks();
   };
+
+    // Delete a task
   const deleteTodo = async (id: string) => {
     const todoDoc = doc(db, 'tasks', id);
     await deleteDoc(todoDoc);
+    // refresh list after deletion
     fetchTasks();
   };
 
@@ -50,6 +58,7 @@ export default function TabLayout() {
       <View style={styles.container}>
         <Text style={styles.mainTitle}>Daily Wellness Tasks</Text>
 
+        {/* Input Field */}
         <View style={styles.inputContainer}>
           <TextInput
             placeholder="New Task"
@@ -61,6 +70,8 @@ export default function TabLayout() {
             <Text style={styles.buttonText}>Add</Text>
           </TouchableOpacity>
         </View>
+
+        {/* Task list */}
         <FlatList
           data={tasks}
           renderItem={({ item }) => (

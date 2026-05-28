@@ -21,13 +21,14 @@ export default function TabOneScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Hello!</Text>
 
-      {/* Mood Tracker */}
+      {/* Mood tracker section */}
       <View style={styles.moodContainer}>
         <Text style={styles.moodText}>
           How are you feeling today?
         </Text>
       </View>
 
+      {/* Mood selection buttons */}
       <View style={{ flexDirection: 'row', marginTop: 10 }}>
         {["😞", "😐", "😊", "😁"].map((emoji) => (
           <TouchableOpacity
@@ -41,11 +42,12 @@ export default function TabOneScreen() {
         ))}
       </View>
 
+      {/* Display selected mood */}
       <Text style={{ marginTop: 10, fontSize: 18, marginBottom: 80 }}>
         Current Mood: {mood}
       </Text>
   
-
+      {/* Navigate to other tabs */}
       <View style={styles.navRow}>
         <TouchableOpacity
           style={styles.navButton}
@@ -62,6 +64,7 @@ export default function TabOneScreen() {
         </TouchableOpacity>
       </View>
 
+      {/* Sign Out */}
       <TouchableOpacity
         style={styles.button}
         onPress={() => auth.signOut()}
@@ -91,6 +94,7 @@ const styles = StyleSheet.create({
     width: '80%',
     backgroundColor: '#E8EAF6', 
   },
+  // Tab button styling
   navRow: {
     flexDirection: 'row',
     gap: 12,

@@ -37,13 +37,23 @@ A mental wellness mobile app built with Expo React Native and Firebase.
    git clone <https://github.com/luthrasaara/evolvere-expo-app.git>
    ```
 
-2. Start the development server
+2. Run 
+
+   ```bash
+   npm install
+   ```
+
+3. Create a .env file using .env.example
+
+4. Add your Firebase credentials
+
+5. Start the development server
 
    ```bash
    npx expo start
    ```
 
-3. Run on: Andorid Simulator
+6. Run on: Andorid Simulator
 
 
 ## Firebase Setup

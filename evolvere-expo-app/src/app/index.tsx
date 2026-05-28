@@ -20,12 +20,16 @@ const index = () => {
     }
   }
 
+  // Function to handle user sign-up
   const signUp = async () => {
     try {
       const user = await createUserWithEmailAndPassword(auth, email, password)
+
+      // If account creation is successful, navigate to tabs screen
       if (user) router.replace('/(tabs)');
     } catch (error: any) {
       console.log(error)
+      // Show error message
       alert('Sign in failed: ' + error.message);
     }
   }
@@ -34,8 +38,12 @@ const index = () => {
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Welcome</Text>
       <Text style={styles.subtitle}>Sign in to your account to continue</Text>
+
+      {/* Email and password input fields */}
       <TextInput style={styles.textInput} placeholder="email@example.com" value={email} onChangeText={setEmail} />
       <TextInput style={styles.textInput} placeholder="password" value={password} onChangeText={setPassword} secureTextEntry/>
+
+
       <TouchableOpacity style={styles.signInButton} onPress={signIn}>
         <Text style={styles.text}>Login</Text>
       </TouchableOpacity>
@@ -48,6 +56,7 @@ const index = () => {
 
 export default index
 
+{/* Styling */}
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -61,6 +70,8 @@ const styles = StyleSheet.create({
     marginBottom: 40, 
     color: '#1A237E', 
   },
+
+  // input field styling
   textInput: {
     height: 50, 
     width: '90%', 
@@ -78,6 +89,8 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 4, 
   },
+
+  // Sign up button styling
   button: {
     width: '90%',
     marginVertical: 15,
@@ -93,6 +106,8 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 5,
   },
+
+// Sign in button styling
   signInButton: {
     width: '90%',
     marginVertical: 15,

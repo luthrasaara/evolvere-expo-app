@@ -1,24 +1,30 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import React from 'react';
+import { Stack, router } from 'expo-router';
+import React, { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
+import { auth } from '../firebase/config';
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-
-export default function TabLayout() {
+export default function RootLayout() {
   const colorScheme = useColorScheme();
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        router.replace('/(tabs)');
+      } else {
+        router.replace('/');
+      }
+    });
+    return unsubscribe;
+  }, []);
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
-         {/* Entry screen */}
-        <Stack.Screen name="index" options={{ headerShown: false }}/>
-        
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }}/>
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }}/>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
       </Stack>
-
-      <AnimatedSplashOverlay />
     </ThemeProvider>
   );
 }

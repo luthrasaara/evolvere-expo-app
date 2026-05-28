@@ -2,20 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import { auth } from '../../firebase/config';
 import { router } from 'expo-router';
-import { getAuth } from 'firebase/auth';
 
 export default function TabOneScreen() {
   const [mood, setMood] = useState("😊");
 
   useEffect(() => {
-    const unsubscribe = getAuth().onAuthStateChanged((user) => {
-      if (!user) {
-        router.replace('/');
-      }
-    });
-
-    return unsubscribe;
-  }, []);
+  const unsubscribe = auth.onAuthStateChanged((user) => {
+    console.log('Auth state changed:', user?.email ?? 'null');
+    if (!user) {
+      router.replace('/');
+    }
+  });
+  return unsubscribe;
+}, []);
 
   return (
     <View style={styles.container}>
@@ -67,7 +66,14 @@ export default function TabOneScreen() {
       {/* Sign Out */}
       <TouchableOpacity
         style={styles.button}
-        onPress={() => auth.signOut()}
+        onPress={async () => {
+        try {
+          await auth.signOut();
+          router.replace('/');
+        } catch (error: any) {
+          alert('Sign out failed: ' + error.message);
+        }
+      }}
       >
         <Text style={styles.text}>Sign Out</Text>
       </TouchableOpacity>

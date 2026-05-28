@@ -1,98 +1,126 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useState } from 'react'
+import { auth } from "../firebase/config"
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
+import { router } from 'expo-router';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+const index = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
+
+  const signIn = async () => {
+    try {
+      const user = await signInWithEmailAndPassword(auth, email, password)
+      if (user) router.replace('/(tabs)');
+    } catch (error: any) {
+      console.log(error)
+      alert('Sign in failed: ' + error.message);
+    }
   }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
+
+  const signUp = async () => {
+    try {
+      const user = await createUserWithEmailAndPassword(auth, email, password)
+      if (user) router.replace('/(tabs)');
+    } catch (error: any) {
+      console.log(error)
+      alert('Sign in failed: ' + error.message);
+    }
   }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.title}>Welcome</Text>
+      <Text style={styles.subtitle}>Sign in to your account to continue</Text>
+      <TextInput style={styles.textInput} placeholder="email@example.com" value={email} onChangeText={setEmail} />
+      <TextInput style={styles.textInput} placeholder="password" value={password} onChangeText={setPassword} secureTextEntry/>
+      <TouchableOpacity style={styles.signInButton} onPress={signIn}>
+        <Text style={styles.text}>Login</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={signUp}>
+        <Text style={styles.text2}>Make Account</Text>
+      </TouchableOpacity>
+    </SafeAreaView>
+  )
 }
 
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
-  );
-}
+export default index
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
     alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+    backgroundColor: '#EEF0FF', 
   },
   title: {
+    fontSize: 35, 
+    fontWeight: '800', 
+    marginBottom: 40, 
+    color: '#1A237E', 
+  },
+  textInput: {
+    height: 50, 
+    width: '90%', 
+    backgroundColor: '#FFFFFF', 
+    borderColor: '#E8EAF6', 
+    borderWidth: 2,
+    borderRadius: 15, 
+    marginVertical: 15,
+    paddingHorizontal: 25, 
+    fontSize: 16, 
+    color: '#3C4858', 
+    shadowColor: '#9E9E9E', 
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4, 
+  },
+  button: {
+    width: '90%',
+    marginVertical: 15,
+    borderColor: '#DDE1F0',
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 15, 
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#5C6BC0', 
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  signInButton: {
+    width: '90%',
+    marginVertical: 15,
+    backgroundColor: '#5C6BC0', 
+    padding: 20,
+    borderRadius: 15, 
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#5C6BC0', 
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  text: {
+    color: '#FFFFFF', 
+    fontSize: 18,
+    fontWeight: '600', 
+  },
+  text2: {
+    color: '#5C6BC0', 
+    fontSize: 18, 
+    fontWeight: '600', 
+  },
+  subtitle: {
+    fontSize: 20,
+    color: '#888',
+    marginBottom: 36,
     textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
   },
 });

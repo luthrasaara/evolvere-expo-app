@@ -43,10 +43,6 @@ A mental wellness mobile app built with Expo React Native and Firebase.
    npm install
    ```
 
-3. Create a .env file using .env.example
-
-4. Add your Firebase credentials
-
 5. Start the development server
 
    ```bash
